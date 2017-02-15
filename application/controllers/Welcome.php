@@ -19,8 +19,22 @@ class Welcome extends Application
 	 */
 	public function index()
 	{
+		$this->load->model('Tasks');
 		$this->data['pagebody'] = 'homepage';
-		$this->render(); 
+
+		$tasks = $this->Tasks->all();   // get all the tasks
+
+		// count how many are not done
+		$count = 0;
+		foreach($tasks as $task) {
+			/*if ($task->status != 2) {
+				$count++;
+			}*/
+		}
+		// and save that as a view parameter
+		$this->data['remaining_tasks'] = $count;
+
+		$this->render();
 	}
 
 }
