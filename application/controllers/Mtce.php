@@ -13,7 +13,7 @@ class Mtce extends Application {
 		{
                     $role = $this->session->userdata('userrole');
                     $this->data['pagetitle'] = 'TODO List Maintenance ('. $role . ')';
-                    
+
 		    // build the task presentation output
 		    $result = ''; // start with an empty array
 		    foreach ($tasks as $task)
@@ -29,7 +29,7 @@ class Mtce extends Application {
 
 		    // and then pass them on
 		    $this->data['pagebody'] = 'itemlist';
-                    
+
 		    $this->render();
 		}
 
@@ -53,7 +53,7 @@ class Mtce extends Application {
 
                     $this->data['pagination'] = $this->pagenav($num);
                     $role = $this->session->userdata('userrole');
-                    if ($role == ROLE_OWNER) 
+                    if ($role == ROLE_OWNER)
                             $this->data['pagination'] .= $this->parser->parse('itemadd',[], true);
                     $this->show_page($tasks);
 		}
@@ -69,7 +69,7 @@ class Mtce extends Application {
 		    );
 		    return $this->parser->parse('itemnav',$parms,true);
 		}
-                
+
                 // Initiate adding a new task
                 public function add()
                 {
@@ -77,7 +77,7 @@ class Mtce extends Application {
                     $this->session->set_userdata('task', $task);
                     $this->showit();
                 }
-                
+
                 // initiate editing of a task
                 public function edit($id = null)
                 {
@@ -87,7 +87,7 @@ class Mtce extends Application {
                     $this->session->set_userdata('task', $task);
                     $this->showit();
                 }
-                
+
                 // Render the current DTO
                 private function showit()
                 {
@@ -97,9 +97,28 @@ class Mtce extends Application {
                     {
                         $priparms[$record->id] = $record->name;
                     }
+
+					foreach ($this->sizes->all() as $record)
+                    {
+                        $priparms2[$record->id] = $record->name;
+                    }
+
+					foreach ($this->groups->all() as $record)
+                    {
+                        $priparms3[$record->id] = $record->name;
+                    }
+
+					foreach ($this->statuses->all() as $record)
+                    {
+                        $priparms4[$record->id] = $record->name;
+                    }
+
                     $fields = array(
                         'ftask' => makeTextField('Task description', 'task', $task->task, 'Work', "What needs to be done?"),
                         'fpriority' => makeComboBox('Priority', 'priority', $task->priority, $priparms, "How important is this task?"),
+						'fsize' => makeComboBox('Size', 'size', $task->size, $priparms2, "How big is this task?"),
+                        'fgroup' => makeComboBox('Category', 'group', $task->group, $priparms3, "What category is this task in?"),
+						'fstatus' => makeComboBox('Status', 'status', $task->status, $priparms4, "Is the task done or not done?"),
                         'zsubmit' => makeSubmitButton('Update the TODO task', "Click on home or <back> if you don't want to change anything!", 'btn-success'),
                     );
                     $this->data = array_merge($this->data, $fields);
@@ -107,7 +126,7 @@ class Mtce extends Application {
                     $this->data['pagebody'] = 'itemedit';
                     $this->render();
                 }
-                
+
                 // handle form submission
                 public function submit()
                 {
@@ -139,13 +158,13 @@ class Mtce extends Application {
                     }
                     $this->showit();
                 }
-                
+
                 // Forget about this edit
                 function cancel() {
                     $this->session->unset_userdata('task');
                     redirect('/mtce');
                 }
-                
+
                 // Delete this item altogether
                 function delete()
                 {

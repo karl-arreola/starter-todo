@@ -6,7 +6,7 @@ class Tasks extends MY_Model {
         {
             parent::__construct('tasks', 'id');
         }
-        
+
         function getCategorizedTasks()
         {
             // extract the undone tasks
@@ -23,13 +23,13 @@ class Tasks extends MY_Model {
             // order them by category
             usort($undone, "orderByCategory");
 
-            // convert the array of task objects into an array of associative objects       
+            // convert the array of task objects into an array of associative objects
             foreach ($undone as $task)
                 $converted[] = (array) $task;
 
             return $converted;
         }
-        
+
         // provide form validation rules
         public function rules()
         {
@@ -38,6 +38,7 @@ class Tasks extends MY_Model {
                 ['field' => 'priority', 'label' => 'Priority', 'rules' => 'integer|less_than[4]'],
                 ['field' => 'size', 'label' => 'Task size', 'rules' => 'integer|less_than[4]'],
                 ['field' => 'group', 'label' => 'Task group', 'rules' => 'integer|less_than[5]'],
+				['field' => 'status', 'label' => 'Task status', 'rules' => 'integer|less_than[3]'],
             );
             return $config;
         }
